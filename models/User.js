@@ -22,7 +22,20 @@ userSchema.pre('save', async function(next){
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
   next();
-})
+});
+
+// static method to login user
+userSchema.statics.login = async function(email, password) {
+  const user = await this.findOne({ email }); // search db with inputted email; if no user, will return undefined
+  if (user) {
+    const auth = await bcrypt.compare(password, user.password) //comparing the password a user signs in with, with the hashed password stored in database
+    if (auth) {
+      return user   // if successful, we will return the user
+    }
+    throw Error ('Incorrect password.') // reaches this block if password is not correct
+  }
+  throw Error('Incorrect email.')
+}
 
 
 const User = mongoose.model('user', userSchema) // Under the hood, mongoose will look for plural version in our collection and connect this model to the database
