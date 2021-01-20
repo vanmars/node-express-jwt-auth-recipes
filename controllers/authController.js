@@ -39,15 +39,18 @@ const createToken = (id) => {
   });
 }
 
-
+// Get SignUp Form
 module.exports.signup_get = (req,res) => {
   res.render('signup');
 };
 
+
+// Get Login Form
 module.exports.login_get = (req,res) => {
   res.render('login');
 }
 
+// Sign Up
 module.exports.signup_post = async (req,res) => {
   const { email, password } = req.body;
   try {
@@ -65,6 +68,7 @@ module.exports.signup_post = async (req,res) => {
   }
 }
 
+// Log In
 module.exports.login_post = async (req,res) => {
   const { email, password } = req.body;
 
@@ -82,3 +86,9 @@ module.exports.login_post = async (req,res) => {
     res.status(400).json({ errors });
   }
 }
+
+ //Log Out
+ module.exports.logout_get = (req, res) => {
+    res.cookie('jwt', '', { maxAge: 1}); // can't delete cookie from server, but can replace data with empty string and give it a short lifespand
+    res.redirect('/');
+ }
